@@ -25,6 +25,15 @@ GLuint bufferTrianguloID;
 vector <Vertice> cuadrado;
 GLuint vertexArrayCuadradoID;
 GLuint bufferCuadradoID;
+
+vector <Vertice> topePitaramide;
+GLuint vertexArrayTopePiramideID;
+GLuint bufferTopePiramideID;
+
+vector <Vertice> escalera;
+GLuint vertexArrayEscaleraID;
+GLuint bufferEscaleraID;
+
 //Para usar shader
 //Instancia del Shader
 Shader *shader;
@@ -40,11 +49,11 @@ void inicializarCuadrado() {
 	};
 	Vertice V2 = {
 		vec3(1.0f,-0.6f,0.0f),
-		vec4(0.15f,0.30f,0.00f,1.0f)
+		vec4(0.79f,0.74f,0.63f,1.0f)
 	};
 	Vertice V3 = {
 		vec3(1.0f,-1.0f,0.0f),
-		vec4(0.15f,0.30f,0.00f,1.0f)
+		vec4(0.79f,0.74f,0.63f,1.0f)
 
 	};
 	Vertice V4 = {
@@ -60,22 +69,22 @@ void inicializarCuadrado() {
 
 }
 
-void inicializarTriangulo() {
+void inicializarTriangulo() { //Piramide
 	Vertice v1 = {
 		vec3(0.25f,0.3f,0.0f),
-		vec4(0.8f,0.1f,0.0f,1.0f)
+		vec4(1.00f,0.90f,0.80f,1.0f)
 	};
 	Vertice v2 = {
 		vec3(-0.25,0.3f,0.0f),
-		vec4(0.8f,0.1f,0.0f,1.0f)
+			vec4(1.00f,0.90f,0.80f,1.0f)
 	};
 	Vertice v3 = {
 		vec3(-0.8,-0.6f,0.0f),
-		vec4(0.8f,0.1f,0.0f,1.0f)
+			vec4(1.00f,0.90f,0.80f,1.0f)
 	};
 	Vertice v4 = {
 		vec3(0.8,-0.6f,0.0f),
-		vec4(0.8f,0.1f,0.0f,1.0f)
+			vec4(1.00f,0.90f,0.80f,1.0f)
 	};
 	triangulo.push_back(v1);
 	triangulo.push_back(v2);
@@ -86,9 +95,61 @@ void inicializarTriangulo() {
 
 }
 
+void inicializarTopePiramide() { //TopeC Cuadrado Piramide
+	Vertice V1 = {
+		vec3(-0.18f,0.3f,0.0f),
+		vec4(0.79f,0.74f,0.63f,1.0f)
+	};
+	Vertice V2 = {
+		vec3(0.18f,0.3f,0.0f),
+		vec4(0.79f,0.74f,0.63f,1.0f)
+	};
+	Vertice V3 = {
+		vec3(0.18f,0.5f,0.0f),
+		vec4(0.68f,0.64f,0.55f,1.0f)
+
+	};
+	Vertice V4 = {
+		vec3(-0.18f,0.5f,0.0f),
+		vec4(0.68f,0.64f,0.55f,1.0f)
+	};
+
+
+	cuadrado.push_back(V1);
+	cuadrado.push_back(V2);
+	cuadrado.push_back(V3);
+	cuadrado.push_back(V4);
+
+}
+
+void inicializarEscalera() { //Escalera
+	Vertice v1 = {
+		vec3(0.18f,0.3f,0.0f),
+		vec4(0.79f,0.74f,0.64f,1.0f)
+	};
+	Vertice v2 = {
+		vec3(-0.18,0.3f,0.0f),
+			vec4(1.00f,0.90f,0.80f,1.0f)
+	};
+	Vertice v3 = {
+		vec3(-0.4,-0.6f,0.0f),
+		vec4(0.68f,0.64f,0.55f,1.0f)
+	};
+	Vertice v4 = {
+		vec3(0.4,-0.6f,0.0f),
+		vec4(0.68f,0.64f,0.55f,1.0f)
+	};
+	escalera.push_back(v1);
+	escalera.push_back(v2);
+	escalera.push_back(v3);
+	escalera.push_back(v4);
+
+}
+
 void dibujar() {
 	//Elegir shader
 	shader->enlazar();
+	
 	//Elegir el vertexArray 
 	glBindVertexArray(vertexArrayTrianguloID);
 	//Llamar la funcion de dibujo-Dibujar
@@ -97,6 +158,14 @@ void dibujar() {
 	//Cuadrado
 	glBindVertexArray(vertexArrayCuadradoID);
 	glDrawArrays(GL_QUADS,0, cuadrado.size());
+
+	//Tope Piramide
+	glBindVertexArray(vertexArrayTopePiramideID);
+	glDrawArrays(GL_QUADS, 0, topePitaramide.size());
+
+	//Escalera
+	glBindVertexArray(vertexArrayEscaleraID);
+	glDrawArrays(GL_QUADS, 0, escalera.size());
 
 	//Soltar Bind
 	glBindVertexArray(0);
@@ -144,7 +213,8 @@ int main()
 	//Inicializar
 	inicializarTriangulo();
 	inicializarCuadrado();
-
+	inicializarTopePiramide();
+	inicializarEscalera();
 
 	const char* rutaVertexShader = "Vertex.shader";
 	const char* rutaFragmentShader = "FragmentShader.shader";
@@ -184,6 +254,29 @@ int main()
 	glEnableVertexAttribArray(posicionID);
 	glEnableVertexAttribArray(colorID);
 	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice),0);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
+
+	//Inicializar TopePiramide
+	glGenVertexArrays(1, &vertexArrayTopePiramideID);
+	glBindVertexArray(vertexArrayTopePiramideID);
+	glGenBuffers(1, &bufferTopePiramideID);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferTopePiramideID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertice) * topePitaramide.size(), topePitaramide.data(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(posicionID);
+	glEnableVertexAttribArray(colorID);
+	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
+	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
+
+
+	//Inicializar Escalera
+	glGenVertexArrays(1, &vertexArrayEscaleraID);
+	glBindVertexArray(vertexArrayEscaleraID);
+	glGenBuffers(1, &bufferTopePiramideID);
+	glBindBuffer(GL_ARRAY_BUFFER, bufferEscaleraID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertice) * escalera.size(), escalera.data(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(posicionID);
+	glEnableVertexAttribArray(colorID);
+	glVertexAttribPointer(posicionID, 3, GL_FLOAT, GL_FALSE, sizeof(Vertice), 0);
 	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vertice), (void*)sizeof(vec3));
 
 	//Soltar el vertexArray y el buffer
